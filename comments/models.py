@@ -10,3 +10,5 @@ class Comment(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.author_name
