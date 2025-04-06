@@ -13,4 +13,7 @@ class NewsAdmin(admin.ModelAdmin):
         'view_count',
         'is_published'
     )
-    search_fields = ('title', 'content', 'slug', )
+    search_fields = ('title', 'content', 'slug')
+    list_filter = ('category', 'tags', 'is_published')
+    prepopulated_fields = {'slug': ('title',)}
+
