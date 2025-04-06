@@ -1,3 +1,16 @@
 from django.contrib import admin
+from .models import News
 
-# Register your models here.
+
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'title',
+        'category',
+        'tags',
+        'image',
+        'view_count',
+        'is_published'
+    )
+    search_fields = ('title', 'content', 'slug', )
