@@ -7,6 +7,10 @@ class Category(models.Model):
     description = models.TextField(null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
     def __str__(self):
         return self.name
 
