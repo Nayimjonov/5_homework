@@ -3,14 +3,17 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import Category
 from .serializers import CategorySerializer
+from .pagination import CategoryPagination
 
 
 class CategoryViewSet(viewsets.ViewSet):
-    
+
     def list(self, request):
         queryset = Category.objects.all()
-        serializer = CategorySerializer(queryset, many=True)
-        return Response(serializer.data)
+        paginator = CategoryPagination()
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = CategorySerializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def create(self, request):
         serializer = CategorySerializer(data=request.data)
@@ -26,7 +29,7 @@ class CategoryViewSet(viewsets.ViewSet):
 
     def update(self, request, pk=None):
         category = get_object_or_404(Category, pk=pk)
-        serializer = CategorySerializer(Category, category.request.data)
+        serializer = CategorySerializer(category, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
