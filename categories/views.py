@@ -23,12 +23,12 @@ class CategoryViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=400)
 
     def retrieve(self, request, pk=None):
-        category = get_object_or_404(Category, pk=pk)
+        category = get_object_or_404(Category, slug=pk)
         serializer = CategorySerializer(category)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
-        category = get_object_or_404(Category, pk=pk)
+        category = get_object_or_404(Category, slug=pk)
         serializer = CategorySerializer(category, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -36,7 +36,7 @@ class CategoryViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=400)
 
     def destroy(self, request, pk=None):
-        category = get_object_or_404(Category, pk=pk)
+        category = get_object_or_404(Category, slug=pk)
         category.delete()
         return Response(status=204)
 
