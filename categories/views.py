@@ -39,6 +39,3 @@ class CategoryViewSet(viewsets.ViewSet):
         category = get_object_or_404(Category, slug=pk)
         category.delete()
         return Response(status=204)
-
-
-
