@@ -8,4 +8,3 @@ class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     pagination_class = NewsPagination
-
