@@ -49,4 +49,3 @@ class NewsSerializer(serializers.ModelSerializer):
         rep['category'] = NewsCategorySerializer(instance.category).data
         rep['tags'] = NewsTagSerializer(instance.tags.all(), many=True).data
         return rep
-
