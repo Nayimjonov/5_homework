@@ -1,20 +1,24 @@
 from rest_framework import serializers
 from .models import News
+from categories.models import Category
+from tags.models import Tag
 
 
-class NewsCategorySerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(read_only=True)
-    slug = serializers.SlugField(read_only=True)
+class NewsCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'slug')
 
-class NewsTagsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(read_only=True)
-    slug = serializers.SlugField(read_only=True)
+
+class NewsTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'name', 'slug')
+
 
 class NewsSerializer(serializers.ModelSerializer):
-    category = NewsCategorySerializer(read_only=True)
-    tags = NewsTagsSerializer(read_only=True, many=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
     class Meta:
         model = News
@@ -31,5 +35,17 @@ class NewsSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+        read_only_fields = ('slug', 'view_count', 'created_at', 'updated_at', 'is_published')
 
 
+    def create(self, validated_data):
+        tags = validated_data.pop('tags', [])
+        instance = News.objects.create(**validated_data)
+        instance.tags.set(tags)
+        return instance
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['category'] = NewsCategorySerializer(instance.category).data
+        rep['tags'] = NewsTagSerializer(instance.tags.all(), many=True).data
+        return rep
